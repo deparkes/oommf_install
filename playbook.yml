@@ -1,5 +1,67 @@
 ---
-- hosts:
-    - all
+# This is a 'play' to install lubuntu-desktop
+- name: Install lubuntu-desktop
+  hosts: all
   tasks:
-    - action: ping
+    - name: Install tcl8.6-dev
+      become: true
+      apt:
+        name: lubuntu-desktop
+        install_recommends: no
+        state: present 
+        update_cache: true      
+
+
+
+# This is a 'play' to install tcl/tk
+- name: Install tcl/tk
+  hosts: all
+  tasks:
+    - name: Install tcl8.6-dev
+      become: true
+      apt:
+        name: tcl8.6-dev
+        state: present 
+        update_cache: true      
+
+    - name: Install tk8.6-dev
+      become: true
+      apt:
+        name: tk8.6-dev
+        state: present 
+        update_cache: true 
+        
+# This is a 'play' to download and unpack oommf
+- name: Install oommf
+  hosts: all
+  tasks:
+  
+    - name: Ensure oommf directory exists
+      become_user: vagrant
+      file:
+        path: ~/
+        state: directory
+        
+    - name: Download and unpack OOMMF
+      become_user: vagrant
+      unarchive:
+        src: http://math.nist.gov/oommf/dist/oommf20a0_20170929.tar.gz
+        remote_src: yes
+        dest: ~/
+        
+    - name: Run oommf distclean
+      become_user: vagrant
+      command: tclsh8.6 ./oommf.tcl pimake distclean
+      args:
+        chdir: ~/oommf
+
+#      command: echo "test" > test.txt
+      
+    - name: Run oommf distclean
+      become_user: vagrant
+      command: tclsh8.6 ./oommf.tcl pimake
+      args:
+        chdir: ~/oommf
+
+      
+      
