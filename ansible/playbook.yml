@@ -11,8 +11,6 @@
         state: present 
         update_cache: true      
 
-
-
 # This is a 'play' to install tcl/tk
 - name: Install tcl/tk
   hosts: all
@@ -48,7 +46,11 @@
         src: http://math.nist.gov/oommf/dist/oommf20a0_20170929.tar.gz
         remote_src: yes
         dest: ~/
-        
+
+# This is a 'play' to download and unpack oommf
+- name: Install oommf
+  hosts: all
+  tasks:        
     - name: Run oommf distclean
       become_user: vagrant
       command: tclsh8.6 ./oommf.tcl pimake distclean
